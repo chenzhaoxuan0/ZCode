@@ -67,15 +67,20 @@ function applyProtocolPresentationSurface(
  *
  * 旧 workspace snapshot 不再参与 Provider 和 Model 执行。
  */
-function applyProtocolProviderRegistry(
+function applyProtocolProviderRegistryWithHeadersPort(
   options: Omit<ZCodeAppOptions, "providerRegistry">,
   providerRegistry: ZCodeAppOptions["providerRegistry"],
   configuredDefaultModelSelection?: ModelSelection,
+  providerRuntimeHeadersPort?: ZCodeAppOptions["providerRuntimeHeadersPort"],
 ): ZCodeAppOptions {
   return {
     ...options,
     providerRegistry,
     ...(configuredDefaultModelSelection ? { configuredDefaultModelSelection } : {}),
+    // standalone 引导时 registry runtime 持有凭据头端口：agent 内部自答
+    // provider 认证头，不再向客户端发 interaction/requestProviderRuntimeHeaders
+    //（外部宿主没有凭据，答不上来 turn 会死在 prepare——实测实证）。
+    ...(providerRuntimeHeadersPort ? { providerRuntimeHeadersPort } : {}),
   };
 }
 
@@ -156,7 +161,14 @@ export async function runZCodeProtocolAgent(
     providerRegistryRuntime = await acquireProtocolStartupResource({
       signal: options.lifecycle?.signal,
       logger,
-      create: () => startProcessProviderRegistryRuntime(runtimeEnv),
+      create: () =>
+        startProcessProviderRegistryRuntime(runtimeEnv, {
+          // 外部宿主（agent-workbench daemon 等）经 stdio 使用本 CLI 时，
+          // 与 -p / TUI 同源引导：读共享凭据库装填账号与模型目录。
+          // 不传 standalone 时 credentialStore 为 undefined，registry 恒空，
+          // session/create 得到空模型目录（"Select a model before continuing"）。
+          standalone: {},
+        }),
       disposeLate: (runtime) => runtime.dispose(),
     });
     options.lifecycle?.signal.throwIfAborted();
@@ -249,10 +261,11 @@ export async function runZCodeProtocolAgent(
     const server = (serverForCleanup = new ZCodeProtocolAgentServer({
       createZCodeApp: (appOptions = {}) =>
         createZCodeApp({
-          ...applyProtocolProviderRegistry(
+          ...applyProtocolProviderRegistryWithHeadersPort(
             applyProtocolPresentationSurface(appOptions, presentationSurface),
             activeProviderRegistryRuntime.runtime.registryService,
             activeProviderRegistryRuntime.configuredDefaultModelSelection,
+            activeProviderRegistryRuntime.providerRuntimeHeadersPort,
           ),
           // 只读同进程已应用快照；不为子任务另发 Host RPC，也不在 ModelFactory 偷换模型。
           resolveEffectiveModelSelection: (selection) => {
