@@ -1,5 +1,18 @@
 # ZCode
 
+> [!NOTE]
+> **个人修改版说明**
+>
+> 本仓库是 [zai-org/ZCode](https://github.com/zai-org/ZCode) 的个人 fork（基于 `1e783298`），非智谱官方发布，与官方无任何关联。
+>
+> 在上游基础上做了以下改动：
+>
+> 1. **新增 `zcode quota` 子命令**：查询 Coding Plan 剩余用量、已用量与重置时间，支持 `--json` / `--verbose`。
+> 2. **TUI 侧栏新增「额度」分区**：展示各额度桶的剩余百分比与重置倒计时，按重置时间由近到远排序。
+> 3. **TUI 画布与侧栏底色改为透明**：移除原先的蓝灰底色（浅色主题 `#f8fafc` / `#e2e8f0`），透出终端自身背景色。
+>
+> 许可证沿用上游的 Apache-2.0，`LICENSE` 与 `NOTICE.md` 均未改动。
+
 <div align="center">
   <img src="public/logo/icons/1024x1024.png" alt="ZCode" width="128" height="128" />
 </div>

@@ -21,6 +21,7 @@ Commands:
   login [zai|bigmodel]  Sign in through browser authorization
   logout     Remove the shared Z.AI login credentials
   plugins    Manage plugins and marketplaces (\`plugins list|install|uninstall|enable|disable|update|validate|marketplace ...\`; alias: plugin)
+  quota      Show remaining Coding Plan quota and reset times
   skills     List local skills (\`skills list\`)
   tui        Open the terminal UI
   version    Print the CLI version
@@ -253,9 +254,17 @@ Slash Commands:
         context: "Context",
         mcp: "MCP",
         modifiedFiles: "Modified Files",
+        quota: "Quota",
         run: "Run",
         status: "Status",
         todos: "Todos",
+      },
+      quota: {
+        empty: "No Coding Plan quota",
+        plan: "plan",
+        tokensLimit: "Tokens",
+        toolsLimit: "Tools",
+        unknownLimit: "Other",
       },
       shellSubtitle: "OpenTUI shell",
       title: "Sidebar",

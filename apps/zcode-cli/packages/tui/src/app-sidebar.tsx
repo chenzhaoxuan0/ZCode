@@ -10,6 +10,7 @@ import { formatNumber } from "./state.js";
 import { ApiSection } from "./app-sidebar-api.js";
 import { McpSection } from "./app-sidebar-mcp.js";
 import { ModifiedFilesSection } from "./app-sidebar-modified-files.js";
+import { QuotaSection } from "./app-sidebar-quota.js";
 import { SidebarSectionHeader } from "./app-sidebar-section-header.js";
 import { SubagentsSection } from "./app-sidebar-subagents.js";
 import type { SubagentItem, SubagentsController } from "./app-subagents.js";
@@ -20,6 +21,7 @@ import {
   type SidebarSectionId,
   type SidebarSectionExpansion,
 } from "./app-sidebar-layout.js";
+import type { TuiQuotaSummary } from "./types.js";
 
 export { SIDEBAR_CONTENT_WIDTH } from "./app-sidebar-layout.js";
 
@@ -45,6 +47,8 @@ type SidebarProps = SidebarState & {
   developerMode?: boolean;
   onToggleSection?: (section: SidebarSectionId) => void;
   sectionExpansion?: SidebarSectionExpansion;
+  /** Coding Plan 额度；无凭证或未开通套餐时为 null，此时不渲染该分区。 */
+  quota?: TuiQuotaSummary | null;
   version?: string;
 };
 
@@ -75,6 +79,12 @@ export function Sidebar(props: SidebarProps): React.ReactElement {
         ]
       : []),
     sidebarSection(copy.sidebar.sections.status, statusLines(props)),
+    QuotaSection({
+      copy,
+      expanded: props.sectionExpansion?.quota ?? true,
+      onToggle: () => props.onToggleSection?.("quota"),
+      quota: props.quota ?? null,
+    }),
     props.subagents
       ? h(SubagentsSection, {
           controller: props.subagents,

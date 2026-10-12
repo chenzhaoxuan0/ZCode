@@ -9,7 +9,7 @@ const SIDEBAR_AUTO_VISIBLE_BREAKPOINT = 120;
 export const SIDEBAR_OVERLAY_BACKGROUND = RGBA.fromInts(0, 0, 0, 70);
 
 type SidebarPreference = "auto" | "hidden";
-export type SidebarSectionId = "apis" | "mcp" | "modifiedFiles" | "todos" | "subagents";
+export type SidebarSectionId = "apis" | "mcp" | "modifiedFiles" | "quota" | "todos" | "subagents";
 export type SidebarSectionExpansion = Record<SidebarSectionId, boolean>;
 
 type SidebarControllerState = {
@@ -41,6 +41,7 @@ const DEFAULT_SIDEBAR_STATE: SidebarControllerState = {
     apis: true,
     mcp: true,
     modifiedFiles: true,
+    quota: true,
     todos: true,
   },
 };

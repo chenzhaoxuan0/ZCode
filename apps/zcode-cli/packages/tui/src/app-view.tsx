@@ -18,6 +18,7 @@ import { QueuedInputPanel } from "./app-queued-inputs.js";
 import { ModeSuggestionPanel } from "./app-mode-suggestion-panel.js";
 import { ModelSuggestionPanel } from "./app-model-suggestion-panel.js";
 import { useMcpSidebarStatus } from "./app-mcp-status.js";
+import { useQuotaStatus } from "./app-quota-status.js";
 import { Sidebar } from "./app-sidebar.js";
 import {
   type SidebarLayout,
@@ -110,6 +111,9 @@ export function AppView(props: {
   const mcpStatus = useMcpSidebarStatus(
     props.loginRequired ? undefined : props.options.listMcpServers,
   );
+  const quotaStatus = useQuotaStatus(
+    props.loginRequired ? undefined : props.options.getCodingPlanQuota,
+  );
   const transcriptMessages = props.liveModelText
     ? [
         ...props.messages,
@@ -146,6 +150,7 @@ export function AppView(props: {
         modifiedFiles: props.modifiedFiles,
         networkRequests: props.networkRequests,
         onToggleSection: props.toggleSidebarSection,
+        quota: quotaStatus.summary ?? null,
         sectionExpansion: props.sidebarSections,
         status: props.status,
         statusDetails: props.statusDetails,

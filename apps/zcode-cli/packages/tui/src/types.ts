@@ -274,6 +274,30 @@ export type TuiGetMainSessionId = () => string | undefined;
 
 export type TuiListMcpServers = () => Promise<Record<string, McpServerStatus>>;
 
+/** 单个额度桶在侧栏里的一行。 */
+export type TuiQuotaEntry = {
+  /** 服务端额度类型，例如 `TOKENS_LIMIT` / `TIME_LIMIT`。 */
+  limitType: string;
+  /** 剩余百分比（0-100），已在 CLI 侧从「已用占比」换算好。 */
+  remainingPercent: number;
+  /** 重置时刻（epoch ms）；服务端没给时为 undefined。 */
+  resetsAt?: number;
+};
+
+/**
+ * 侧栏额度分区的数据。
+ *
+ * 取数与口径换算都在 CLI 侧（`@zcode/adapters` 的 `fetchCodingPlanQuota`）完成，
+ * TUI 只负责渲染，不去理解服务端 `percentage` 是已用还是剩余。
+ */
+export type TuiQuotaSummary = {
+  level: string | null;
+  entries: readonly TuiQuotaEntry[];
+};
+
+/** 返回 `null` 表示没有 Coding Plan 凭证，界面不显示该分区。 */
+export type TuiGetCodingPlanQuota = () => Promise<TuiQuotaSummary | null>;
+
 export type TuiSlashCommandSuggestion = {
   aliases?: readonly string[];
   name: string;
@@ -319,6 +343,7 @@ export type TuiOptions = {
   readSubagentTranscript?: TuiReadSubagentTranscript;
   listWorkspacePathSuggestions?: TuiListWorkspacePathSuggestions;
   listMcpServers?: TuiListMcpServers;
+  getCodingPlanQuota?: TuiGetCodingPlanQuota;
   listWorkflowRuns?: TuiListWorkflowRuns;
   replayWorkflowRuns?: TuiReplayWorkflowRuns;
   getMainSessionId?: TuiGetMainSessionId;

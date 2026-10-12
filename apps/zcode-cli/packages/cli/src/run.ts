@@ -23,6 +23,7 @@ import { isPluginHostInvocation, runPluginHostCommand } from "./plugin-host-comm
 import { isDwfChildInvocation, runDwfChildCommand } from "./dwf-child-command.js";
 import { runPrompt } from "./prompt-command.js";
 import { runPluginsCommand, type PluginsCommandFlags } from "./plugins-command.js";
+import { runQuotaCommand } from "./quota-command.js";
 import { runSkillsCommand } from "./skills-command.js";
 import { runTuiCommand } from "./tui-command.js";
 import type {
@@ -545,6 +546,8 @@ export const run = async (ctx: RunContext, deps: RunDependencies = {}): Promise<
       );
     case "doctor":
       return runDoctor(ctx, options, workingDirectory);
+    case "quota":
+      return await runQuotaCommand(ctx, options);
     case "login":
       return await runLoginCommand(
         ctx,

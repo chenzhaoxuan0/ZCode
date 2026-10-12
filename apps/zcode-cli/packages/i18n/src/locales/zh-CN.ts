@@ -21,6 +21,7 @@ export const zhCN: ZCodeCopy = {
   login [zai|bigmodel]  通过浏览器授权登录
   logout     删除共享的 Z.AI 登录凭据
   plugins    管理插件与市场（\`plugins list|install|uninstall|enable|disable|update|validate|marketplace ...\`；别名 plugin）
+  quota      查询 Coding Plan 剩余用量与重置时间
   skills     列出本地 skills（\`skills list\`）
   tui        打开终端 UI
   version    打印 CLI 版本
@@ -250,9 +251,17 @@ Slash Commands:
         context: "上下文",
         mcp: "MCP",
         modifiedFiles: "变更文件",
+        quota: "额度",
         run: "运行",
         status: "状态",
         todos: "Todos",
+      },
+      quota: {
+        empty: "没有 Coding Plan 额度信息",
+        plan: "套餐",
+        tokensLimit: "Token",
+        toolsLimit: "工具",
+        unknownLimit: "其他",
       },
       shellSubtitle: "OpenTUI 终端",
       title: "侧边栏",

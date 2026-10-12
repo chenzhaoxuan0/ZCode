@@ -3,6 +3,26 @@ import type { TuiThemeTokens } from "./types.js";
 
 export const DEFAULT_TUI_THEME_MODE: UiThemeMode = "dark";
 
+/**
+ * 画布底色设为透明，直接透出终端自身的背景。
+ *
+ * 之前浅色主题用 `#f8fafc`（slate-50）、侧栏用 `#e2e8f0`（slate-200），都是偏蓝的灰，
+ * 在多数终端上会被看成"雾霾蓝"。改成透明后由终端配色决定底色，也避免应用强行
+ * 改写用户终端观感。
+ *
+ * 这里刻意**没有**改成半透明：OpenTUI 的 `setCell` 是把背景色直接写进单元格，
+ * 而终端单元格本身没有"下层"可混合；混合开关 `respectAlpha` 默认 false。
+ * 半透明背景要么被当成不透明色（等于没改），要么渲染成不可预期结果，不可靠。
+ * 想要"侧栏比正文略浅"的层次，目前只能用不透明色，而那正是要去掉的蓝调。
+ *
+ * 影响范围：主内容区底板 + 侧栏底板。输入框等面板(`backgroundPanel`)、
+ * 自己的消息气泡(`backgroundMessageUser`) 仍是不透明色，区域层次保持不变。
+ *
+ * 代价：若强制把主题设为 light、而终端本身是深色，浅色文字会失去对比度。
+ * 主题默认跟随终端自动判定，正常使用不会遇到这个组合。
+ */
+const TRANSPARENT_BACKGROUND = "transparent";
+
 export const DARK_TUI_THEME: TuiThemeTokens = {
   mode: "dark",
   primary: "#7dd3fc",
@@ -15,9 +35,9 @@ export const DARK_TUI_THEME: TuiThemeTokens = {
   text: "#e5e7eb",
   textMuted: "#94a3b8",
   selectedListItemText: "#f8fafc",
-  background: "#0f1419",
+  background: TRANSPARENT_BACKGROUND,
   backgroundPanel: "#161b22",
-  backgroundElement: "#1f2937",
+  backgroundElement: TRANSPARENT_BACKGROUND,
   backgroundMenu: "#161b22",
   backgroundMessageUser: "#30363d",
   border: "#3b4450",
@@ -73,9 +93,9 @@ export const LIGHT_TUI_THEME: TuiThemeTokens = {
   text: "#111827",
   textMuted: "#64748b",
   selectedListItemText: "#0f172a",
-  background: "#f8fafc",
+  background: TRANSPARENT_BACKGROUND,
   backgroundPanel: "#ffffff",
-  backgroundElement: "#e2e8f0",
+  backgroundElement: TRANSPARENT_BACKGROUND,
   backgroundMenu: "#ffffff",
   backgroundMessageUser: "#e0f2fe",
   border: "#cbd5e1",

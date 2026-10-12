@@ -194,9 +194,18 @@ export interface TuiCopy {
       context: string;
       mcp: string;
       modifiedFiles: string;
+      quota: string;
       run: string;
       status: string;
       todos: string;
+    };
+    /** 侧栏额度分区。`unknownLimit` 是服务端新增额度类型时的兜底标签。 */
+    quota: {
+      empty: string;
+      plan: string;
+      tokensLimit: string;
+      toolsLimit: string;
+      unknownLimit: string;
     };
     shellSubtitle: string;
     title: string;
